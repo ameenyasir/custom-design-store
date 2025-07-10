@@ -19,9 +19,6 @@
         {% else %}
         {% set class = 'col-sm-8' %}
         {% endif %}
-
-        
-      
         <div class="{{ class }}"> {% if thumb or images %}
           <ul class="thumbnails">
             {% if thumb %}
@@ -33,7 +30,6 @@
             {% endfor %}
             {% endif %}
           </ul>
-
           {% endif %}
           <ul class="nav nav-tabs">
             <li class="active"><a href="#tab-description" data-toggle="tab">{{ tab_description }}</a></li>
@@ -163,7 +159,6 @@
             {% endif %}
           </ul>
           {% endif %}
-      
           <div id="product"> {% if options %}
             <hr>
             <h3>{{ text_option }}</h3>
@@ -285,65 +280,6 @@
               <br/>
               <button type="button" id="button-cart" data-loading-text="{{ text_loading }}" class="btn btn-primary btn-lg btn-block">{{ button_cart }}</button>
             </div>
-              {% if custom_design_cart %}
-              <div class="text-center">
-                <h1 class="mb-4">Product Customization</h1>
-                <p class="lead">Click the button below to open the product editor.</p>
-                <button type="button" class="btn btn-primary shadow-sm" data-toggle="modal" data-target="#productEditorModal">
-                    Customize Product
-                </button>
-
-                <div class="mt-5 p-3 bg-light rounded shadow-sm">
-                  <textarea style="display:none;" name="custom_data" id="customization" rows="20" class="form-control p-3 bg-white border rounded mt-5"></textarea>
-                    
-                </div>
-            </div>
-
-            <div class="modal fade" id="productEditorModal" tabindex="-1" role="dialog" aria-labelledby="productEditorModalLabel" aria-hidden="true">
-              <div class="modal-dialog modal-lg modal-dialog-centered" role="document"></div>
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h2 class="modal-title text-center" id="productEditorModalLabel">Product Editor</h2>
-                  </div>
-                  <div class="modal-body" style="padding:0;">
-                    <iframe id="productEditorIframe" src="{{iframe_url}}?product_id={{ product_id}}&base={{base}}&font_family={{font_family}}&font_size={{font_size}}&position={{position}}&rotation={{rotation}}&color={{color}}&logo_position={{logo_position}}&logo_rotation={{logo_rotation}}&add_element={{add_element}}" allowfullscreen style="width:100%;height:75vh;border:none;"></iframe>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-success" id="saveInModalHeader">Save</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close Editor</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <script>
-              window.designState = null;
-              $('#saveInModalHeader').attr('disabled', true);
-              $('#button-cart').attr('disabled', true);
-
-              $(document).ready(function() {
-                  const productEditorModal = $('#productEditorModal');
-                  const saveInModalHeaderBtn = $('#saveInModalHeader');
-                  const customization = $('#customization');
-
-                  window.addEventListener('message', function(event) {
-                  if (event.data && event.data.type === 'DESIGN_STATE') {
-                    window.designState = event.data.data;
-                    customization.text(JSON.stringify(window.designState, null, 2));
-                    $('#saveInModalHeader').attr('disabled', false);
-                    $('#button-cart').attr('disabled', false);
-
-                    }
-                  });
-
-                  saveInModalHeaderBtn.on('click', function() {
-                      productEditorModal.modal('hide');
-                  });
-              });
-
-            </script>
-            {% endif %}
-
             {% if minimum > 1 %}
             <div class="alert alert-info"><i class="fa fa-info-circle"></i> {{ text_minimum }}</div>
             {% endif %}</div>
@@ -440,7 +376,7 @@ $('#button-cart').on('click', function() {
 	$.ajax({
 		url: 'index.php?route=checkout/cart/add',
 		type: 'post',
-		data: $('#product input[type=\'text\'], #product input[type=\'hidden\'], #product input[type=\'radio\']:checked, #product input[type=\'checkbox\']:checked, #product select, #product textarea, #customization'),
+		data: $('#product input[type=\'text\'], #product input[type=\'hidden\'], #product input[type=\'radio\']:checked, #product input[type=\'checkbox\']:checked, #product select, #product textarea'),
 		dataType: 'json',
 		beforeSend: function() {
 			$('#button-cart').button('loading');
@@ -611,5 +547,4 @@ $(document).ready(function() {
 	});
 });
 //--></script> 
-<script type="text/javascript" src="catalog/view/javascript/customdesigner/main.js"></script>
 {{ footer }} 

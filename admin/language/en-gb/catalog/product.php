@@ -2,23 +2,6 @@
 // Heading
 $_['heading_title']          = 'Products';
 
-// Product Customization
-$_['entry_add_custom_product']              = 'Add Custom Product';
-$_['entry_mockup_upload']              = 'Mockup Upload';
-$_['entry_text_info']              = 'Please upload a mockup image to use as a base for product customization. Please save the product form once after uploading the mockup image.';
-$_['entry_text_add_element']              = 'Element Restriction';
-$_['entry_restrict_add_element']              = 'Restrict Add Element';
-$_['entry_text_restriction']              = 'Text Restrictions';
-$_['entry_restrict_text_size']              = 'Restrict Text Size';
-$_['entry_restrict_text_color']          = 'Restrict Text Color';
-$_['entry_restrict_text_rotation']              = 'Restrict Text Rotation';
-$_['entry_restrict_text_position']              = 'Restrict Text Position';
-$_['entry_restrict_text_font']              = 'Restrict Text Font';
-$_['entry_image_restriction']              = 'Image Restrictions';
-// $_['entry_restrict_image_upload']              = 'Restrict Image Upload';
-$_['entry_restrict_image_rotation']              = 'Restrict Image Rotation';
-$_['entry_restrict_image_position']              = 'Restrict Image Position';
-
 // Text
 $_['text_success']           = 'Success: You have modified products!';
 $_['text_list']              = 'Product List';

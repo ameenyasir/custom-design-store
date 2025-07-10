@@ -936,29 +936,6 @@ class ControllerSaleOrder extends Controller {
 			$products = $this->model_sale_order->getOrderProducts($this->request->get['order_id']);
 
 			foreach ($products as $product) {
-
-          // Custom design cart
-        //   $custom_data = array();
-
-        //   $customs = $this->model_sale_order->getOrderCustoms($this->request->get['order_id'], $product['order_product_id']);
-
-        //   foreach ($customs as $custom) {
-        //       $custom_data[] = array(
-        //         'custom_data'  => '{"elements": '.$custom['custom_data'].',"textLayerCounter": 0,"imageLayerCounter": 0}'
-        //       );           
-        //   }
-
-		  $data['iframe_url'] = $this->config->get('module_customdesigncart_iframe_url');
-		  $data['custom_design_cart'] = $this->config->get('module_customdesigncart_status');
-
-		  	if ($this->request->server['HTTPS']) {
-				$data['base'] = HTTPS_CATALOG;
-			} else {
-				$data['base'] = HTTP_CATALOG;
-			}
-// $data['custom_data'] = $custom_data;
-
-      
 				$option_data = array();
 
 				$options = $this->model_sale_order->getOrderOptions($this->request->get['order_id'], $product['order_product_id']);
@@ -985,9 +962,6 @@ class ControllerSaleOrder extends Controller {
 				}
 
 				$data['products'][] = array(
-
-        // 'custom'           => $custom_data,
-      
 					'order_product_id' => $product['order_product_id'],
 					'product_id'       => $product['product_id'],
 					'name'    	 	   => $product['name'],
