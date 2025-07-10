@@ -2,12 +2,12 @@
 class ModelCatalogProduct extends Model {
 
         // Custom design cart
-        //   public function getProductMockupImage($product_id) {
-        //     $query = $this->db->query("SELECT mockup_image FROM " . DB_PREFIX . "product_mockup_image  WHERE product_id = '" . (int)$product_id . "'");
+          public function getProductMockupImage($product_id) {
+            $query = $this->db->query("SELECT mockup_image FROM " . DB_PREFIX . "product_mockup_image  WHERE product_id = '" . (int)$product_id . "'");
 
 
-        //     return $query->num_rows ? $query->row['mockup_image'] : '';
-        //   }
+            return $query->num_rows ? $query->row['mockup_image'] : '';
+          }
           //////////////////
       
 	public function addProduct($data) {
@@ -88,8 +88,8 @@ class ModelCatalogProduct extends Model {
 
 		// Custom design product custom config
 		$decodedCustomData = html_entity_decode($data['custom_data']);
-		if (!empty($decodedCustomData)) {
-			$this->db->query("INSERT INTO " . DB_PREFIX . "product_custom_config SET product_id = '" . (int)$product_id . "', custom_data = '" . $this->db->escape($decodedCustomData) . "', restrict_add_element = '" . (int)$data['restrict_add_element'] . "', restrict_text_size = '" . (int)$data['restrict_text_size'] . "', restrict_text_color = '" . (int)$data['restrict_text_color'] . "', restrict_text_position = '" . (int)$data['restrict_text_position'] . "', restrict_text_rotation = '" . (int)$data['restrict_text_rotation'] . "', restrict_text_font = '" . (int)$data['restrict_text_font'] . "', restrict_image_position = '" . (int)$data['restrict_image_position'] . "', restrict_image_rotation = '" . (int)$data['restrict_image_rotation'] . "'");
+		if (isset($decodedCustomData)) {
+			$this->db->query("INSERT INTO " . DB_PREFIX . "product_custom_config SET product_id = '" . (int)$product_id . "', custom_data = '" . $this->db->escape($decodedCustomData) . "', restrict_text_size = '" . (int)$data['restrict_text_size'] . "', restrict_text_rotation = '" . (int)$data['restrict_text_rotation'] . "', restrict_text_position = '" . (int)$data['restrict_text_position'] . "', restrict_text_font = '" . (int)$data['restrict_text_font'] . "', restrict_image_upload = '" . (int)$data['restrict_image_upload'] . "', restrict_image_rotation = '" . (int)$data['restrict_image_rotation'] . "', restrict_image_position = '" . (int)$data['restrict_image_position'] . "'");
 		}
         ///////////////////////
 
@@ -260,19 +260,10 @@ class ModelCatalogProduct extends Model {
 
 
         // Custom design product custom config
-		$custom_data = $this->getProductCustomConfig((int)$product_id);
-		if (!$custom_data){
-			$decodedCustomData = html_entity_decode($data['custom_data']);
-			if (!empty($decodedCustomData)) {
-			$this->db->query("INSERT INTO " . DB_PREFIX . "product_custom_config SET product_id = '" . (int)$product_id . "', custom_data = '" . $this->db->escape($decodedCustomData) . "', restrict_add_element = '" . (int)$data['restrict_add_element'] . "', restrict_text_size = '" . (int)$data['restrict_text_size'] . "', restrict_text_color = '" . (int)$data['restrict_text_color'] . "', restrict_text_rotation = '" . (int)$data['restrict_text_rotation'] . "', restrict_text_position = '" . (int)$data['restrict_text_position'] . "', restrict_text_font = '" . (int)$data['restrict_text_font'] . "', restrict_image_rotation = '" . (int)$data['restrict_image_rotation'] . "', restrict_image_position = '" . (int)$data['restrict_image_position'] . "'");
-			}
-        } else {
-			$decodedCustomData = html_entity_decode($data['custom_data']);
-			if (!empty($decodedCustomData)) {
-			$this->db->query("UPDATE " . DB_PREFIX . "product_custom_config SET custom_data = '" . $this->db->escape($decodedCustomData) . "' WHERE product_id = '" . (int)$product_id . "'");
-			}
-
-			$this->db->query("UPDATE " . DB_PREFIX . "product_custom_config SET restrict_add_element = '" . (int)$data['restrict_add_element'] . "', restrict_text_size = '" . (int)$data['restrict_text_size'] . "', restrict_text_color = '" . (int)$data['restrict_text_color'] . "', restrict_text_rotation = '" . (int)$data['restrict_text_rotation'] . "', restrict_text_position = '" . (int)$data['restrict_text_position'] . "', restrict_text_font = '" . (int)$data['restrict_text_font'] . "', restrict_image_rotation = '" . (int)$data['restrict_image_rotation'] . "', restrict_image_position = '" . (int)$data['restrict_image_position'] . "' WHERE product_id = '" . (int)$product_id . "'");
+        $this->db->query("DELETE FROM " . DB_PREFIX . "product_custom_config WHERE product_id = '" . (int)$product_id . "'");
+		$decodedCustomData = html_entity_decode($data['custom_data']);
+		if (isset($decodedCustomData)) {
+			$this->db->query("INSERT INTO " . DB_PREFIX . "product_custom_config SET product_id = '" . (int)$product_id . "', custom_data = '" . $this->db->escape($decodedCustomData) . "', restrict_text_size = '" . (int)$data['restrict_text_size'] . "', restrict_text_rotation = '" . (int)$data['restrict_text_rotation'] . "', restrict_text_position = '" . (int)$data['restrict_text_position'] . "', restrict_text_font = '" . (int)$data['restrict_text_font'] . "', restrict_image_upload = '" . (int)$data['restrict_image_upload'] . "', restrict_image_rotation = '" . (int)$data['restrict_image_rotation'] . "', restrict_image_position = '" . (int)$data['restrict_image_position'] . "'");
 		}
         ///////////////////////
       
@@ -379,16 +370,7 @@ class ModelCatalogProduct extends Model {
 			$data['product_discount'] = $this->getProductDiscounts($product_id);
 
         // Custom design cart fields
-        $custom_data = $this->getProductCustomConfig($product_id);
-        $data['custom_data'] = $custom_data['custom_data'];
-        $data['restrict_add_element'] = $custom_data['restrict_add_element'];
-        $data['restrict_text_size'] = $custom_data['restrict_text_size'];
-        $data['restrict_text_color'] = $custom_data['restrict_text_color'];
-        $data['restrict_text_rotation'] = $custom_data['restrict_text_rotation'];
-        $data['restrict_text_position'] = $custom_data['restrict_text_position'];
-        $data['restrict_text_font'] = $custom_data['restrict_text_font'];
-        $data['restrict_image_rotation'] = $custom_data['restrict_image_rotation'];
-        $data['restrict_image_position'] = $custom_data['restrict_image_position'];
+        $data['product_custom'] = $this->getProductCustomFields($product_id);
         ////////////////
       
 			$data['product_filter'] = $this->getProductFilters($product_id);
@@ -402,7 +384,7 @@ class ModelCatalogProduct extends Model {
 			$data['product_layout'] = $this->getProductLayouts($product_id);
 			$data['product_store'] = $this->getProductStores($product_id);
 			$data['product_recurrings'] = $this->getRecurrings($product_id);
-// print_r($data);die;
+
 			$this->addProduct($data);
 		}
 	}

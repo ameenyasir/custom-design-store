@@ -77,7 +77,38 @@
           <tr>
             <td class="text-left">{{ product.name }}
               {% for option in product.option %} <br/>
-              &nbsp;<small> - {{ option.name }}: {{ option.value }}</small> {% endfor %}</td>
+              &
+          &nbsp;<small> - {{ option.name }}: {{ option.value }}</small> {% endfor %}
+
+          {% if custom_design_cart %}
+          <div class="text-center">
+                <button type="button" class="btn btn-primary shadow-sm" data-toggle="modal" data-target="#productEditorModal{{ product.order_product_id}}">
+                    Preview Customized Product
+                </button>
+
+                <div class="mt-5 p-3 bg-light rounded shadow-sm">
+                  <textarea style="display:none;" name="custom_data" id="iframeDataDisplay" rows="20" class="form-control p-3 bg-white border rounded mt-5"></textarea>
+                    
+                </div>
+            </div>
+
+            <div class="modal fade" id="productEditorModal{{ product.order_product_id}}" tabindex="-1" role="dialog" aria-labelledby="productEditorModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-lg modal-dialog-centered" role="document"></div>
+                <div class="modal-content">
+                  <div class="modal-header">
+                  </div>
+                  <div class="modal-body" style="padding:0;">
+                    <iframe id="productEditorIframe{{ product.order_product_id}}" src="{{iframe_url}}?order_product_id={{ product.order_product_id}}&product_id={{product.product_id}}&base={{base}}&preview=true&strict=true&zoom=100" allowfullscreen style="width:100%;height:75vh;border:none;"></iframe>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close Preview</button>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+            </div>          
+          </td>
+      
             <td class="text-left">{{ product.model }}</td>
             <td class="text-right">{{ product.quantity }}</td>
             <td class="text-right">{{ product.price }}</td>

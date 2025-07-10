@@ -20,7 +20,20 @@ class ControllerCatalogProduct extends Controller {
 		$this->load->model('catalog/product');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
-			$this->model_catalog_product->addProduct($this->request->post);
+			$product_id = $this->model_catalog_product->addProduct($this->request->post);
+
+			// Custom design mockup image copy logic
+			if (isset($this->request->post['mockup_image']) && is_file(DIR_IMAGE . $this->request->post['mockup_image'])) {
+				$custom_dir = DIR_IMAGE . 'custom/';
+				$custom_image_path = $custom_dir . $product_id . '.png';
+				if (!is_dir($custom_dir)) {
+					mkdir($custom_dir, 0755, true);
+				}
+				$source_image = DIR_IMAGE . $this->request->post['mockup_image'];
+				if (is_file($source_image)) {
+					copy($source_image, $custom_image_path);
+				}
+			}
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
@@ -73,6 +86,20 @@ class ControllerCatalogProduct extends Controller {
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
 			$this->model_catalog_product->editProduct($this->request->get['product_id'], $this->request->post);
+
+			// Custom design mockup image copy logic
+			if (isset($this->request->post['mockup_image']) && is_file(DIR_IMAGE . $this->request->post['mockup_image'])) {
+				$product_id = (int)$this->request->get['product_id'];
+				$custom_dir = DIR_IMAGE . 'custom/';
+				$custom_image_path = $custom_dir . $product_id . '.png';
+				if (!is_dir($custom_dir)) {
+					mkdir($custom_dir, 0755, true);
+				}
+				$source_image = DIR_IMAGE . $this->request->post['mockup_image'];
+				if (is_file($source_image)) {
+					copy($source_image, $custom_image_path);
+				}
+			}
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
@@ -657,6 +684,11 @@ class ControllerCatalogProduct extends Controller {
 			$data['location'] = '';
 		}
 
+		// Custom design
+		if (!empty($product_info)) {
+			$data['product_id'] = $product_info['product_id'];
+		}
+
 		$this->load->model('setting/store');
 
 		$data['stores'] = array();
@@ -1015,6 +1047,95 @@ class ControllerCatalogProduct extends Controller {
 			);
 		}
 
+// var_dump($this->request->post['custom_data']);die;
+        // Custom design product custom config
+		if (isset($this->request->get['product_id'])) {
+			$custom_config_data = $this->model_catalog_product->getProductCustomConfig($this->request->get['product_id']);
+		}
+
+		$data['iframe_url'] = $this->config->get('module_customdesigncart_iframe_url');
+		$data['custom_design_cart'] = $this->config->get('module_customdesigncart_status');
+
+		if (isset($this->request->post['restrict_add_element'])) {
+            $data['restrict_add_element'] = $this->request->post['restrict_add_element'];
+        } elseif (isset($this->request->get['product_id']) && !empty($custom_config_data)) {
+            $data['restrict_add_element'] = (int)$custom_config_data['restrict_add_element'];
+        } else {
+            $data['restrict_add_element'] = 0;
+        }
+
+        if (isset($this->request->post['restrict_text_size'])) {
+            $data['restrict_text_size'] = $this->request->post['restrict_text_size'];
+        } elseif (isset($this->request->get['product_id']) && !empty($custom_config_data)) {
+            $data['restrict_text_size'] = (int)$custom_config_data['restrict_text_size'];
+        } else {
+            $data['restrict_text_size'] = 0;
+        }
+
+		if (isset($this->request->post['restrict_text_color'])) {
+            $data['restrict_text_color'] = $this->request->post['restrict_text_color'];
+        } elseif (isset($this->request->get['product_id']) && !empty($custom_config_data)) {
+            $data['restrict_text_color'] = (int)$custom_config_data['restrict_text_color'];
+        } else {
+            $data['restrict_text_color'] = 0;
+        }
+
+		if (isset($this->request->post['restrict_text_rotation'])) {
+            $data['restrict_text_rotation'] = $this->request->post['restrict_text_rotation'];
+        } elseif (isset($this->request->get['product_id']) && !empty($custom_config_data)) {
+            $data['restrict_text_rotation'] = (int)$custom_config_data['restrict_text_rotation'];
+        } else {
+            $data['restrict_text_rotation'] = 0;
+        }
+
+		if (isset($this->request->post['restrict_text_position'])) {
+            $data['restrict_text_position'] = $this->request->post['restrict_text_position'];
+        } elseif (isset($this->request->get['product_id']) && !empty($custom_config_data)) {
+            $data['restrict_text_position'] = (int)$custom_config_data['restrict_text_position'];
+        } else {
+            $data['restrict_text_position'] = 0;
+        }
+
+		if (isset($this->request->post['restrict_text_font'])) {
+            $data['restrict_text_font'] = $this->request->post['restrict_text_font'];
+        } elseif (isset($this->request->get['product_id']) && !empty($custom_config_data)) {
+            $data['restrict_text_font'] = (int)$custom_config_data['restrict_text_font'];
+        } else {
+            $data['restrict_text_font'] = 0;
+        }
+
+		// if (isset($this->request->post['restrict_image_upload'])) {
+        //     $data['restrict_image_upload'] = $this->request->post['restrict_image_upload'];
+        // } elseif (isset($this->request->get['product_id'])) {
+        //     $data['restrict_image_upload'] = (int)$custom_config_data['restrict_image_upload'];
+        // } else {
+        //     $data['restrict_image_upload'] = 0;
+        // }
+
+		if (isset($this->request->post['restrict_image_rotation'])) {
+            $data['restrict_image_rotation'] = $this->request->post['restrict_image_rotation'];
+        } elseif (isset($this->request->get['product_id']) && !empty($custom_config_data)) {
+            $data['restrict_image_rotation'] = (int)$custom_config_data['restrict_image_rotation'];
+        } else {
+            $data['restrict_image_rotation'] = 0;
+        }
+
+		if (isset($this->request->post['restrict_image_position'])) {
+            $data['restrict_image_position'] = $this->request->post['restrict_image_position'];
+        } elseif (isset($this->request->get['product_id']) && !empty($custom_config_data)) {
+            $data['restrict_image_position'] = (int)$custom_config_data['restrict_image_position'];
+        } else {
+            $data['restrict_image_position'] = 0;
+        }
+
+		if ($this->request->server['HTTPS']) {
+			$data['base'] = HTTPS_CATALOG;
+		} else {
+			$data['base'] = HTTP_CATALOG;
+		}
+
+        ////////////////////////
+      
 		if (isset($this->request->post['product_special'])) {
 			$product_specials = $this->request->post['product_special'];
 		} elseif (isset($this->request->get['product_id'])) {
@@ -1035,6 +1156,31 @@ class ControllerCatalogProduct extends Controller {
 			);
 		}
 
+
+          // Custom design mockup image
+          $product_id = isset($this->request->get['product_id']) ? (int)$this->request->get['product_id'] : 0;
+          $custom_mockup_path = 'custom/' . $product_id . '.png';
+          if ($product_id && is_file(DIR_IMAGE . $custom_mockup_path)) {
+              $data['mockup_image'] = $custom_mockup_path;
+          } elseif (isset($this->request->post['mockup_image'])) {
+              $data['mockup_image'] = $this->request->post['mockup_image'];
+          } else {
+              $data['mockup_image'] = '';
+          }
+
+          $this->load->model('tool/image');
+
+		if ($product_id && is_file(DIR_IMAGE . $custom_mockup_path)) {
+			$data['thumb_mockup_image'] = $this->model_tool_image->resize($custom_mockup_path, 100, 100);
+		} elseif (isset($this->request->post['mockup_image']) && is_file(DIR_IMAGE . $this->request->post['mockup_image'])) {
+			$data['thumb_mockup_image'] = $this->model_tool_image->resize($this->request->post['mockup_image'], 100, 100);
+		} elseif (!empty($product_info) && is_file(DIR_IMAGE . $data['mockup_image'])) {
+			$data['thumb_mockup_image'] = $this->model_tool_image->resize($data['mockup_image'], 100, 100);
+		} else {
+			$data['thumb_mockup_image'] = $this->model_tool_image->resize('no_image.png', 100, 100);
+		}
+          /////////////////////////
+      
 		// Image
 		if (isset($this->request->post['image'])) {
 			$data['image'] = $this->request->post['image'];
@@ -1056,6 +1202,31 @@ class ControllerCatalogProduct extends Controller {
 
 		$data['placeholder'] = $this->model_tool_image->resize('no_image.png', 100, 100);
 
+
+          // Custom design mockup image
+        //   $product_id = isset($this->request->get['product_id']) ? (int)$this->request->get['product_id'] : 0;
+        //   $custom_mockup_path = 'custom/' . $product_id . '.png';
+        //   if ($product_id && is_file(DIR_IMAGE . $custom_mockup_path)) {
+        //       $data['mockup_image'] = $custom_mockup_path;
+        //   } elseif (isset($this->request->post['mockup_image'])) {
+        //       $data['mockup_image'] = $this->request->post['mockup_image'];
+        //   } elseif (!empty($product_info)) {
+        //       $data['mockup_image'] = $this->model_catalog_product->getProductMockupImage($product_id);
+        //   } else {
+        //       $data['mockup_image'] = '';
+        //   }
+
+        //   $this->load->model('tool/image');
+
+        //   if ($product_id && is_file(DIR_IMAGE . $custom_mockup_path)) {
+        //     $data['thumb_mockup_image'] = $this->model_tool_image->resize($custom_mockup_path, 100, 100);
+        //   } elseif (!empty($product_info) && is_file(DIR_IMAGE . $data['mockup_image'])) {
+        //     $data['thumb_mockup_image'] = $this->model_tool_image->resize($data['mockup_image'], 100, 100);
+        //   } else {
+        //     $data['thumb_mockup_image'] = $this->model_tool_image->resize('no_image.png', 100, 100);
+        //   }
+          /////////////////////////
+      
 		// Images
 		if (isset($this->request->post['product_image'])) {
 			$product_images = $this->request->post['product_image'];

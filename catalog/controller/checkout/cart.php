@@ -1,6 +1,15 @@
 <?php
 class ControllerCheckoutCart extends Controller {
 	public function index() {
+		$data['iframe_url'] = $this->config->get('module_customdesigncart_iframe_url');
+		$data['custom_design_cart'] = $this->config->get('module_customdesigncart_status');
+
+		if ($this->request->server['HTTPS']) {
+			$data['base'] = HTTPS_SERVER;
+		} else {
+			$data['base'] = HTTP_SERVER;
+		}
+		// var_dump($data['custom_design_cart']);die;
 		$this->load->language('checkout/cart');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -131,7 +140,11 @@ class ControllerCheckoutCart extends Controller {
 				}
 
 				$data['products'][] = array(
+
+        // 'custom'    => $product['custom_data'],
+      
 					'cart_id'   => $product['cart_id'],
+					'product_id'   => $product['product_id'],
 					'thumb'     => $image,
 					'name'      => $product['name'],
 					'model'     => $product['model'],
@@ -260,6 +273,7 @@ class ControllerCheckoutCart extends Controller {
 	}
 
 	public function add() {
+		// var_dump($this->request->post);die;
 		$this->load->language('checkout/cart');
 
 		$json = array();
@@ -287,6 +301,16 @@ class ControllerCheckoutCart extends Controller {
 				$option = array();
 			}
 
+
+        // Custom design cart
+        if (isset($this->request->post['custom_data'])) {
+          $custom_data = html_entity_decode($this->request->post['custom_data']);
+		//   var_dump($custom_data);die;
+        } else {
+          $custom_data = [];
+        }
+        ////////////////////////
+      
 			$product_options = $this->model_catalog_product->getProductOptions($this->request->post['product_id']);
 
 			foreach ($product_options as $product_option) {
@@ -316,7 +340,9 @@ class ControllerCheckoutCart extends Controller {
 			}
 
 			if (!$json) {
-				$this->cart->add($this->request->post['product_id'], $quantity, $option, $recurring_id);
+				
+        $this->cart->add($this->request->post['product_id'], $quantity, $option, $custom_data, $recurring_id);
+      
 
 				$json['success'] = sprintf($this->language->get('text_success'), $this->url->link('product/product', 'product_id=' . $this->request->post['product_id']), $product_info['name'], $this->url->link('checkout/cart'));
 

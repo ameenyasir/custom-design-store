@@ -2,6 +2,163 @@
 class ControllerProductProduct extends Controller {
 	private $error = array();
 
+
+        // Custom design cart
+        public function upload(){
+          $filename = basename(html_entity_decode($this->request->files['customImage']['name'], ENT_QUOTES, 'UTF-8'));
+          $file = DIR_IMAGE.'upload/'.$filename;
+          if(file_exists($file)){
+            $result = true;
+          } else {
+            $result = move_uploaded_file($this->request->files['customImage']['tmp_name'], $file);
+          }
+          echo json_encode(['status'=>$result,'filename'=>$filename]);
+        }
+
+        public function getcustomdata(){
+          $item=[
+            'label'=>'First Line',
+            'x'=>'10',
+            'y'=>'12',
+            'family'=>'arial',
+            'size'=>'25'
+          ];
+
+          $data=[
+            $item
+          ];
+
+          echo json_encode($data);
+        }
+
+        public function saveimage(){
+
+          
+          $image=file_get_contents("php://input");
+
+
+          // print_r(strlen($image)); echo " - ";
+
+          $image = str_replace("data:application/octet-stream;base64,","",$image);
+          
+          $image=base64_decode($image);
+          $im = imagecreatefromstring($image);
+            // header('Content-Type: image/png');
+            $result = imagepng($im, 'test.png');
+            // imagedestroy($im);
+          print_r($result);
+
+       
+
+        }
+
+		public function getCustomCartData() {
+			$this->load->model('catalog/product');
+
+			$cart_id = isset($this->request->get['cart_id']) ? (int)$this->request->get['cart_id'] : 0;
+
+			// Set JSON response header
+			$this->response->addHeader('Content-Type: application/json');
+
+			if (!$cart_id) {
+				$this->response->setOutput(json_encode([
+					'success' => false,
+					'message' => 'Missing or invalid product_id'
+				]));
+				return;
+			}
+
+			// Query the database for the custom_data
+			$query = $this->db->query("SELECT custom_data FROM `" . DB_PREFIX . "cart` WHERE cart_id = '" . (int)$cart_id . "'");
+
+			if ($query->num_rows) {
+				$custom_data = json_decode($query->row['custom_data'], true);
+				// set headers to allow cross origin requests
+				$this->response->addHeader('Access-Control-Allow-Origin: *');
+				$this->response->addHeader('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+				$this->response->addHeader('Access-Control-Allow-Headers: Content-Type, Authorization');
+
+				$this->response->setOutput('{"elements": '.json_encode($custom_data).',"textLayerCounter": 0,"imageLayerCounter": 0}');
+			} else {
+				$this->response->setOutput(json_encode([
+					'success' => false,
+					'message' => 'No custom data found for this product'
+				]));
+			}
+		}
+
+        ////////////////////
+	public function getCustomOrderData() {
+		$this->load->model('catalog/product');
+
+		$order_product_id = isset($this->request->get['order_product_id']) ? (int)$this->request->get['order_product_id'] : 0;
+
+		// Set JSON response header
+		$this->response->addHeader('Content-Type: application/json');
+
+		if (!$order_product_id) {
+			$this->response->setOutput(json_encode([
+				'success' => false,
+				'message' => 'Missing or invalid product_id'
+			]));
+			return;
+		}
+
+		// Query the database for the custom_data
+		$query = $this->db->query("SELECT custom_data FROM `" . DB_PREFIX . "order_custom` WHERE order_product_id = '" . (int)$order_product_id . "'");
+
+		if ($query->num_rows) {
+			$custom_data = json_decode($query->row['custom_data'], true);
+			// set headers to allow cross origin requests
+			$this->response->addHeader('Access-Control-Allow-Origin: *');
+			$this->response->addHeader('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+			$this->response->addHeader('Access-Control-Allow-Headers: Content-Type, Authorization');
+
+			$this->response->setOutput('{"elements": '.json_encode($custom_data).',"textLayerCounter": 0,"imageLayerCounter": 0}');
+		} else {
+			$this->response->setOutput(json_encode([
+				'success' => false,
+				'message' => 'No custom data found for this product'
+			]));
+		}
+	}
+
+		public function getCustomConfigData() {
+			$this->load->model('catalog/product');
+
+			$product_id = isset($this->request->get['product_id']) ? (int)$this->request->get['product_id'] : 0;
+
+			// Set JSON response header
+			$this->response->addHeader('Content-Type: application/json');
+
+			if (!$product_id) {
+				$this->response->setOutput(json_encode([
+					'success' => false,
+					'message' => 'Missing or invalid product_id'
+				]));
+				return;
+			}
+
+			// Query the database for the custom_data
+			$query = $this->db->query("SELECT custom_data FROM `" . DB_PREFIX . "product_custom_config` WHERE product_id = '" . (int)$product_id . "'");
+
+			if ($query->num_rows) {
+				$custom_data = json_decode($query->row['custom_data'], true);
+				// set headers to allow cross origin requests
+				$this->response->addHeader('Access-Control-Allow-Origin: *');
+				$this->response->addHeader('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+				$this->response->addHeader('Access-Control-Allow-Headers: Content-Type, Authorization');
+
+				$this->response->setOutput('{"elements": '.json_encode($custom_data).',"textLayerCounter": 0,"imageLayerCounter": 0}');
+			} else {
+				$this->response->setOutput(json_encode([
+					'success' => false,
+					'message' => 'No custom data found for this product'
+				]));
+			}
+		}
+
+      
 	public function index() {
 		$this->load->language('product/product');
 
@@ -268,6 +425,16 @@ class ControllerProductProduct extends Controller {
 
 			$this->load->model('tool/image');
 
+        // Custom design cart image
+        // $customImage = $this->model_catalog_product->getCustomImage($this->request->get['product_id']);
+        // if ($customImage) {
+        //   $data['customImage'] = 'image/'.$customImage;
+        // } else {
+        //   $data['customImage'] = '';
+        // }
+        ///////////////////////
+      
+
 			if ($product_info['image']) {
 				$data['popup'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height'));
 			} else {
@@ -322,6 +489,33 @@ class ControllerProductProduct extends Controller {
 				);
 			}
 
+
+        // Custom design cart fields
+        // $product_customs = $this->model_catalog_product->getProductCustomFields($this->request->get['product_id']);
+
+        // $data['product_customs'] = $product_customs;
+        // $data['product_customs_json'] = json_encode($product_customs);
+		$data['iframe_url'] = $this->config->get('module_customdesigncart_iframe_url');
+		$data['custom_design_cart'] = $this->config->get('module_customdesigncart_status');
+
+		if ($this->request->server['HTTPS']) {
+			$data['base'] = HTTPS_SERVER;
+		} else {
+			$data['base'] = HTTP_SERVER;
+		}
+
+		$custom_config_data = $this->model_catalog_product->getProductCustomConfig((int)$this->request->get['product_id']);
+
+		$data['add_element'] = ($custom_config_data['restrict_add_element'] == 1) ? "false" : "true";
+		$data['font_family'] = ($custom_config_data['restrict_text_font'] == 1) ? "false" : "true";
+		$data['font_size'] = ($custom_config_data['restrict_text_size'] == 1) ? "false" : "true";
+		$data['position'] = ($custom_config_data['restrict_text_position'] == 1) ? "false" : "true";
+		$data['rotation'] = ($custom_config_data['restrict_text_rotation'] == 1) ? "false" : "true";
+		$data['color'] = ($custom_config_data['restrict_text_color'] == 1) ? "false" : "true";
+		$data['logo_position'] = ($custom_config_data['restrict_image_position'] == 1) ? "false" : "true";
+		$data['logo_rotation'] = ($custom_config_data['restrict_image_rotation'] == 1) ? "false" : "true";
+        ////////////////////
+    //   var_dump($data);die;
 			$data['options'] = array();
 
 			foreach ($this->model_catalog_product->getProductOptions($this->request->get['product_id']) as $option) {

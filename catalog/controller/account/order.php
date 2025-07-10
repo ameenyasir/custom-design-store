@@ -86,6 +86,15 @@ class ControllerAccountOrder extends Controller {
 	}
 
 	public function info() {
+		$data['iframe_url'] = $this->config->get('module_customdesigncart_iframe_url');
+		$data['custom_design_cart'] = $this->config->get('module_customdesigncart_status');
+
+		if ($this->request->server['HTTPS']) {
+			$data['base'] = HTTPS_SERVER;
+		} else {
+			$data['base'] = HTTP_SERVER;
+		}
+
 		$this->load->language('account/order');
 
 		if (isset($this->request->get['order_id'])) {
@@ -241,6 +250,22 @@ class ControllerAccountOrder extends Controller {
 			$products = $this->model_account_order->getOrderProducts($this->request->get['order_id']);
 
 			foreach ($products as $product) {
+
+        // Custom design cart
+        // $custom_data = array();
+
+        // $customs = $this->model_account_order->getOrderCustoms($this->request->get['order_id'], $product['order_product_id']);
+
+        // foreach ($customs as $custom) {
+
+        //   $custom_data[] = array(
+        //     'custom_data'  => '{"elements": '.$custom['custom_data'].',"textLayerCounter": 0,"imageLayerCounter": 0}'
+        //   );
+        // }
+
+		// var_dump($custom_data);die;
+        //////////////////
+      
 				$option_data = array();
 
 				$options = $this->model_account_order->getOrderOptions($this->request->get['order_id'], $product['order_product_id']);
@@ -273,6 +298,11 @@ class ControllerAccountOrder extends Controller {
 				}
 
 				$data['products'][] = array(
+
+//////////
+					'order_product_id' => $product['order_product_id'],
+					'product_id' => $product['product_id'],
+					//////////////////////
 					'name'     => $product['name'],
 					'model'    => $product['model'],
 					'option'   => $option_data,
@@ -331,7 +361,7 @@ class ControllerAccountOrder extends Controller {
 			$data['content_bottom'] = $this->load->controller('common/content_bottom');
 			$data['footer'] = $this->load->controller('common/footer');
 			$data['header'] = $this->load->controller('common/header');
-
+// var_dump($data);die;
 			$this->response->setOutput($this->load->view('account/order_info', $data));
 		} else {
 			return new Action('error/not_found');
