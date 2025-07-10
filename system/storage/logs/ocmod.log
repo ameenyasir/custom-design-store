@@ -1,0 +1,191 @@
+2025-07-07 15:20:17 - MOD: Modification Default
+
+FILE: system/engine/action.php
+REGEX: ~(require|include)(_once)?\(([^)]+)~
+LINE: 69
+
+FILE: system/engine/loader.php
+REGEX: ~(require|include)(_once)?\(([^)]+)~
+LINE: 77
+LINE: 151
+LINE: 168
+
+FILE: system/library/config.php
+REGEX: ~(require|include)(_once)?\(([^)]+)~
+LINE: 59
+
+FILE: system/library/language.php
+REGEX: ~(require|include)(_once)?\(([^)]+)~
+LINE: 67
+LINE: 73
+
+FILE: system/library/template/template.php
+REGEX: ~(require|include)(_once)?\(([^)]+)~
+LINE: 18
+
+FILE: system/library/template/twig.php
+CODE: if (is_file($file)) {
+LINE: 13
+----------------------------------------------------------------
+MOD: Custom Design Cart By iExtend Labs
+
+FILE: system/library/cart/cart.php
+CODE: $option_data = array();
+LINE: 92
+CODE: $product_data[] = array(
+LINE: 285
+CODE: public function add($product_id, $quantity = 1, $option = array(), $recurring_id = 0) {
+NOT FOUND - OPERATIONS ABORTED!
+
+FILE: admin/controller/catalog/product.php
+CODE: if (isset($this->request->post['product_special'])) {
+LINE: 1127
+CODE: // Image
+LINE: 1195
+LINE: 1262
+
+FILE: admin/controller/sale/order.php
+CODE: foreach ($products as $product) {
+LINE: 960
+CODE: $data['products'][] = array(
+LINE: 1003
+
+FILE: admin/model/catalog/product.php
+CODE: class ModelCatalogProduct extends Model {
+LINE: 11
+CODE: foreach ($data['product_description'] as $language_id => $value) {
+LINE: 45
+CODE: if (isset($data['product_special'])) {
+LINE: 130
+CODE: $this->db->query("DELETE FROM " . DB_PREFIX . "product_description WHERE product_id = '" . (int)$product_id . "'");
+LINE: 227
+CODE: $this->db->query("DELETE FROM " . DB_PREFIX . "product_special WHERE product_id = '" . (int)$product_id . "'");
+LINE: 317
+CODE: $data['product_filter'] = $this->getProductFilters($product_id);
+LINE: 428
+CODE: $this->db->query("DELETE FROM " . DB_PREFIX . "product_filter WHERE product_id = '" . (int)$product_id . "'");
+LINE: 459
+CODE: public function getProductSpecials($product_id) {
+LINE: 695
+
+FILE: admin/model/sale/order.php
+CODE: public function getOrderVouchers($order_id) {
+LINE: 258
+
+FILE: admin/view/template/catalog/product_form.twig
+CODE: <li><a href="#tab-links" data-toggle="tab">{{ tab_links }}</a></li>
+LINE: 39
+CODE: <div class="tab-pane" id="tab-links">
+LINE: 826
+
+FILE: admin/view/template/sale/order_info.twig
+CODE: {% endfor %}</td>
+NOT FOUND - OPERATIONS ABORTED!
+
+FILE: catalog/controller/account/order.php
+CODE: foreach ($products as $product) {
+LINE: 257
+CODE: $data['products'][] = array(
+LINE: 308
+
+FILE: catalog/controller/checkout/cart.php
+CODE: $data['products'][] = array(
+LINE: 135
+CODE: $product_options = $this->model_catalog_product->getProductOptions($this->request->post['product_id']);
+LINE: 315
+CODE: $this->cart->add($this->request->post['product_id'], $quantity, $option, $recurring_id);
+NOT FOUND - OPERATIONS ABORTED!
+
+FILE: catalog/controller/checkout/confirm.php
+CODE: $order_data['products'][] = array(
+LINE: 228
+CODE: $data['products'][] = array(
+LINE: 382
+
+FILE: catalog/controller/common/cart.php
+CODE: $data['products'][] = array(
+LINE: 99
+
+FILE: catalog/controller/product/product.php
+CODE: public function index() {
+LINE: 217
+CODE: $this->load->model('tool/image');
+LINE: 491
+CODE: $data['options'] = array();
+LINE: 573
+
+FILE: catalog/model/account/order.php
+CODE: public function getOrderVouchers($order_id) {
+LINE: 152
+
+FILE: catalog/model/catalog/product.php
+CODE: public function getProduct($product_id) {
+LINE: 15
+CODE: public function getProductImages($product_id) {
+LINE: 399
+
+FILE: catalog/model/checkout/order.php
+CODE: $order_product_id = $this->db->getLastId();
+LINE: 20
+CODE: $this->db->query("DELETE FROM " . DB_PREFIX . "order_option WHERE order_id = '" . (int)$order_id . "'");
+LINE: 77
+CODE: foreach ($product['option'] as $option) {
+LINE: 103
+
+FILE: catalog/view/theme/default/template/account/order_info.twig
+CODE: nbsp;<small> - {{ option.name }}: {{ option.value }}</small> {% endfor %}</td>
+NOT FOUND - OPERATIONS ABORTED!
+
+FILE: catalog/view/theme/default/template/checkout/cart.twig
+CODE: {% if product.reward %} <br/>
+LINE: 97
+
+FILE: catalog/view/theme/default/template/checkout/confirm.twig
+CODE: {% if product.recurring %} <br/>
+LINE: 25
+
+FILE: catalog/view/theme/default/template/common/cart.twig
+CODE: {% if product.recurring %}
+LINE: 19
+
+FILE: catalog/view/theme/default/template/product/product.twig
+CODE: {% if thumb or images %}
+LINE: 33
+CODE: {% endif %}
+LINE: 46
+CODE: <div id="product">
+LINE: 358
+CODE: {{ footer }}
+LINE: 810
+CODE: data: $('#product input[type=\'text\'], #product input[type=\'hidden\'], #product input[type=\'radio\']:checked, #product input[type=\'checkbox\']:checked, #product select, #product textarea'),
+NOT FOUND - OPERATIONS ABORTED!
+----------------------------------------------------------------
+2025-07-07 15:25:09 - MOD: Modification Default
+
+FILE: system/engine/action.php
+REGEX: ~(require|include)(_once)?\(([^)]+)~
+LINE: 69
+
+FILE: system/engine/loader.php
+REGEX: ~(require|include)(_once)?\(([^)]+)~
+LINE: 77
+LINE: 151
+LINE: 168
+
+FILE: system/library/config.php
+REGEX: ~(require|include)(_once)?\(([^)]+)~
+LINE: 59
+
+FILE: system/library/language.php
+REGEX: ~(require|include)(_once)?\(([^)]+)~
+LINE: 67
+LINE: 73
+
+FILE: system/library/template/template.php
+REGEX: ~(require|include)(_once)?\(([^)]+)~
+LINE: 18
+
+FILE: system/library/template/twig.php
+CODE: if (is_file($file)) {
+LINE: 13
+----------------------------------------------------------------
